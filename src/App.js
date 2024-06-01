@@ -1,9 +1,9 @@
-import React from 'react';
-import Header from 'components/header';
-import { Route, Routes } from 'react-router-dom';
-import routes from 'routes';
-import { Container, Flex, ScrollArea } from '@mantine/core';
-import Footer from 'components/footer';
+// import React from 'react';
+import { Container, Flex, ScrollArea } from '@mantine/core'
+import Footer from 'components/footer'
+import Header from 'components/header'
+import { Route, Routes } from 'react-router-dom'
+import routes from 'routes'
 
 const App = () => {
   return (
