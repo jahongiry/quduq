@@ -23,3 +23,6 @@
 .caret-label:has(input:focus) .custom-caret {
   display: inline;
 }
+.active_btn {
+  background-color: #0c345a;
+}

@@ -1,15 +1,8 @@
 import { LineChart } from '@mantine/charts'
 import { Button, Group, Loader, Paper, Text, rem } from '@mantine/core'
 import { MonthPicker } from '@mantine/dates'
-import {
-	IconArrowDown,
-	IconArrowUp,
-	IconCookie,
-	IconTemperature,
-	IconWaterpolo,
-} from '@tabler/icons-react'
+import { IconCookie, IconTemperature, IconWaterpolo } from '@tabler/icons-react'
 import { getStatistics, getWells } from 'api'
-import moment from 'moment'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -23,9 +16,10 @@ const WellSingle = () => {
 	const statistics = useStatistics()
 	const { id } = useParams()
 	const [item, setItem] = useState({})
-	const [index, setIndex] = useState(0)
+	const [time, setTime] = useState(null)
 	const [isLoading, setIsLoading] = useState(false)
 	const [value, setValue] = useState(null)
+	// console.log(value?.split())
 
 	const data = [
 		{
@@ -86,43 +80,42 @@ const WellSingle = () => {
 				console.log('====================================')
 			})
 	}, [dispatch])
-	// console.log('item', item)
-	// console.log('statics', statistics)
 	const isWellStatistics = useMemo(
 		() => statistics.filter(stat => stat?.number === `${item?.number};`),
 		[item?.number, statistics]
 	)
-	console.log('isWellStatistics', isWellStatistics)
 
 	useEffect(() => {
 		getData()
 		getStat()
 	}, [getData, getStat])
+	const myWellStatics = time
+		? isWellStatistics.find(statics => statics.received_at === time)
+		: isWellStatistics[0]
 	const options = [
 		{
 			icon: IconWaterpolo,
 			label: 'Suv yer sathidan',
-			value: `${isWellStatistics[index]?.water_level} SM`,
+			value: `${myWellStatics?.water_level} SM`,
 			color: 'aqua',
 		},
 		{
 			icon: IconTemperature,
 			label: 'Suv harorati',
-			value: `${isWellStatistics[index]?.temperature} ℃`,
+			value: `${myWellStatics?.temperature} ℃`,
 			color: '#FAB005',
 		},
 		{
 			icon: IconCookie,
 			label: "Sho'rlanish darajasi",
-			value: isWellStatistics[index]?.salinity,
+			value: myWellStatics?.salinity,
 			color: '#FA5252',
 		},
 	]
-	console.log(isWellStatistics[0]?.time)
 	const stats = options.map(well => (
 		<Paper
 			className={classes.stat}
-			style={{ background: `${well.color}` }}
+			style={{ background: `${well.color}`, border: '2px solid #eee' }}
 			radius='md'
 			shadow='md'
 			p='xs'
@@ -148,46 +141,74 @@ const WellSingle = () => {
 			{isLoading ? (
 				<Loader />
 			) : (
+				// <div className={classes.root}>
+				// <Group style={{ flex: 1 }}>
+				// 	<Group display={'grid'} ta={'center'} c={'#fff'}>
+				// 		<Button
+				// 			disabled={
+				// 				!isWellStatistics?.length ||
+				// 				index + 1 === isWellStatistics?.length
+				// 			}
+				// 			color={'green'}
+				// 			onClick={() =>
+				// 				setIndex(_index => {
+				// 					if (_index + 1 === isWellStatistics?.length) {
+				// 						return _index
+				// 					}
+				// 					return _index + 1
+				// 				})
+				// 			}
+				// 		>
+				// 			<IconArrowUp />
+				// 		</Button>
+				// 		<Text>
+				// 			{moment(isWellStatistics[index]?.received_at).format(
+				// 				'DD/MM/YYYY'
+				// 			)}
+				// 			{console.log('kkkkkk', isWellStatistics[index]?.received_at)}
+				// 		</Text>
+				// 		<Text>
+				// 			{moment(isWellStatistics[index]?.received_at).format(
+				// 				'HH:MM:SS'
+				// 			)}
+				// 		</Text>
+				// 		<Button
+				// 			disabled={!isWellStatistics?.length || index === 0}
+				// 			color={'green'}
+				// 			onClick={() =>
+				// 				setIndex(_index => {
+				// 					if (_index === 0) {
+				// 						return _index
+				// 					}
+				// 					return _index - 1
+				// 				})
+				// 			}
+				// 		>
+				// 			<IconArrowDown />
+				// 		</Button>
+				// 	</Group>
+				// 	{stats}
+				// </Group>
+				// </div>
 				<div className={classes.root}>
 					<Group style={{ flex: 1 }}>
-						<Group display={'grid'} ta={'center'} c={'#fff'}>
-							<Button
-								disabled={
-									!isWellStatistics?.length ||
-									index + 1 === isWellStatistics?.length
-								}
-								color={'green'}
-								onClick={() =>
-									setIndex(_index => {
-										if (_index + 1 === isWellStatistics?.length) {
-											return _index
-										}
-										return _index + 1
-									})
-								}
-							>
-								<IconArrowUp />
-							</Button>
-							<Text>
-								{moment(isWellStatistics[index]?.time).format('DD/MM/YYYY')}
-							</Text>
-							<Text>
-								{moment(isWellStatistics[index]?.time).format('HH:MM:SS')}
-							</Text>
-							<Button
-								disabled={!isWellStatistics?.length || index === 0}
-								color={'green'}
-								onClick={() =>
-									setIndex(_index => {
-										if (_index === 0) {
-											return _index
-										}
-										return _index - 1
-									})
-								}
-							>
-								<IconArrowDown />
-							</Button>
+						<Group
+							display={'grid'}
+							ta={'center'}
+							c={'#fff'}
+							className={classes.hours}
+						>
+							{isWellStatistics.map(hours => (
+								<Button
+									key={hours?.message_id}
+									onClick={() => setTime(hours?.received_at)}
+									className={hours.received_at === time ? 'active_btn' : ''}
+								>
+									{`${hours?.received_at.split(':')[0].split('T')[1]}:${
+										hours?.received_at.split(':')[1]
+									}:${hours?.received_at.split(':')[2]}`}
+								</Button>
+							))}
 						</Group>
 						{stats}
 					</Group>

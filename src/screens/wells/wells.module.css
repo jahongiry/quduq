@@ -35,10 +35,21 @@
 	flex: 1;
 	flex-direction: column;
 	justify-content: space-between;
-	/* background-color: red !important; */
 	span {
 		color: white;
 	}
+}
+.hours {
+	height: 140px;
+	overflow: auto;
+	padding: 10px;
+	border: 2px solid #eee;
+	border-radius: 8px;
+}
+.hours::-webkit-scrollbar {
+	width: 1px;
+	/* background-color: #333;
+	border-radius: 2px; */
 }
 .label {
 	text-transform: uppercase;
