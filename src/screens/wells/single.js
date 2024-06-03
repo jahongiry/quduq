@@ -1,13 +1,13 @@
 import { Button, Group, Loader, Paper, Text, rem } from '@mantine/core'
+import { MonthPicker } from '@mantine/dates'
 import {
-  IconArrowDown,
-  IconArrowUp,
-  IconCookie,
-  IconTemperature,
-  IconWaterpolo,
+	IconArrowDown,
+	IconArrowUp,
+	IconCookie,
+	IconTemperature,
+	IconWaterpolo,
 } from '@tabler/icons-react'
 import { getStatistics, getWells } from 'api'
-import moment from 'moment'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -23,6 +23,7 @@ const WellSingle = () => {
 	const [item, setItem] = useState({})
 	const [index, setIndex] = useState(0)
 	const [isLoading, setIsLoading] = useState(false)
+	const [value, setValue] = useState(null)
 
 	const getData = useCallback(() => {
 		setIsLoading(true)
@@ -56,7 +57,7 @@ const WellSingle = () => {
 		() => statistics.filter(stat => stat?.number === `${item?.number};`),
 		[item?.number, statistics]
 	)
-  console.log("isWellStatistics", isWellStatistics)
+	console.log('isWellStatistics', isWellStatistics)
 
 	useEffect(() => {
 		getData()
@@ -66,12 +67,12 @@ const WellSingle = () => {
 		{
 			icon: IconWaterpolo,
 			label: 'Suv yer sathidan',
-			value: isWellStatistics[index]?.water_level,
+			value: `${isWellStatistics[index]?.water_level} SM`,
 		},
 		{
 			icon: IconTemperature,
 			label: 'Suv harorati',
-			value: isWellStatistics[index]?.temperature,
+			value: `${isWellStatistics[index]?.temperature} ℃`,
 		},
 		{
 			icon: IconCookie,
@@ -128,12 +129,12 @@ const WellSingle = () => {
 							>
 								<IconArrowUp />
 							</Button>
-							<Text>
+							{/* <Text>
 								{moment(isWellStatistics[index]?.time).format('DD/MM/YYYY')}
 							</Text>
 							<Text>
 								{moment(isWellStatistics[index]?.time).format('HH:MM:SS')}
-							</Text>
+							</Text> */}
 							<Button
 								disabled={!isWellStatistics?.length || index === 0}
 								color={'green'}
@@ -153,13 +154,13 @@ const WellSingle = () => {
 					</Group>
 				</div>
 			)}
-
 			<iframe
 				className={classes.iframe}
 				title={item.name}
 				loading='lazy'
 				src={`https://maps.google.com/maps?q=${item?.latitude},${item?.longitude}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
 			/>
+			<MonthPicker value={value} onChange={setValue} />
 		</>
 	) : (
 		<NotFound />
