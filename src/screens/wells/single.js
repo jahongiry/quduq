@@ -1,3 +1,4 @@
+import { LineChart } from '@mantine/charts'
 import { Button, Group, Loader, Paper, Text, rem } from '@mantine/core'
 import { MonthPicker } from '@mantine/dates'
 import {
@@ -8,6 +9,7 @@ import {
 	IconWaterpolo,
 } from '@tabler/icons-react'
 import { getStatistics, getWells } from 'api'
+import moment from 'moment'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -24,6 +26,39 @@ const WellSingle = () => {
 	const [index, setIndex] = useState(0)
 	const [isLoading, setIsLoading] = useState(false)
 	const [value, setValue] = useState(null)
+
+	const data = [
+		{
+			date: 'Mar 22',
+			Suv_sathi: 2890,
+			Suv_harorati: 2338,
+			Shorlanish: 2452,
+		},
+		{
+			date: 'Mar 23',
+			Suv_sathi: 2756,
+			Suv_harorati: 2103,
+			Shorlanish: 2402,
+		},
+		{
+			date: 'Mar 24',
+			Suv_sathi: 3322,
+			Suv_harorati: 986,
+			Shorlanish: 1821,
+		},
+		{
+			date: 'Mar 25',
+			Suv_sathi: 3470,
+			Suv_harorati: 2108,
+			Shorlanish: 2809,
+		},
+		{
+			date: 'Mar 26',
+			Suv_sathi: 3129,
+			Suv_harorati: 1726,
+			Shorlanish: 2290,
+		},
+	]
 
 	const getData = useCallback(() => {
 		setIsLoading(true)
@@ -68,22 +103,26 @@ const WellSingle = () => {
 			icon: IconWaterpolo,
 			label: 'Suv yer sathidan',
 			value: `${isWellStatistics[index]?.water_level} SM`,
+			color: 'aqua',
 		},
 		{
 			icon: IconTemperature,
 			label: 'Suv harorati',
 			value: `${isWellStatistics[index]?.temperature} ℃`,
+			color: '#FAB005',
 		},
 		{
 			icon: IconCookie,
 			label: "Sho'rlanish darajasi",
 			value: isWellStatistics[index]?.salinity,
+			color: '#FA5252',
 		},
 	]
-
+	console.log(isWellStatistics[0]?.time)
 	const stats = options.map(well => (
 		<Paper
 			className={classes.stat}
+			style={{ background: `${well.color}` }}
 			radius='md'
 			shadow='md'
 			p='xs'
@@ -129,12 +168,12 @@ const WellSingle = () => {
 							>
 								<IconArrowUp />
 							</Button>
-							{/* <Text>
+							<Text>
 								{moment(isWellStatistics[index]?.time).format('DD/MM/YYYY')}
 							</Text>
 							<Text>
 								{moment(isWellStatistics[index]?.time).format('HH:MM:SS')}
-							</Text> */}
+							</Text>
 							<Button
 								disabled={!isWellStatistics?.length || index === 0}
 								color={'green'}
@@ -154,13 +193,28 @@ const WellSingle = () => {
 					</Group>
 				</div>
 			)}
+			<div className={classes.bottom}>
+				<div className={classes.month_picker}>
+					<MonthPicker value={value} onChange={setValue} />
+				</div>
+				<LineChart
+					h={350}
+					data={data}
+					dataKey='date'
+					series={[
+						{ name: 'Suv_sathi', color: 'blue.6' },
+						{ name: 'Shorlanish', color: 'red.6' },
+						{ name: 'Suv_harorati', color: 'yellow.6' },
+					]}
+					curveType='linear'
+				/>
+			</div>
 			<iframe
 				className={classes.iframe}
 				title={item.name}
 				loading='lazy'
 				src={`https://maps.google.com/maps?q=${item?.latitude},${item?.longitude}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
 			/>
-			<MonthPicker value={value} onChange={setValue} />
 		</>
 	) : (
 		<NotFound />

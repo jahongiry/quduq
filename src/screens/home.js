@@ -1,16 +1,15 @@
-import AboutUs from 'components/about-us';
-import CarouselCard from 'components/carousel';
-import Features from 'components/features';
-import React from 'react';
+import AboutUs from 'components/about-us'
+import CarouselCard from 'components/carousel'
+import Features from 'components/features'
 
 const Home = () => {
-  return (
-    <div>
-      <CarouselCard />
-      <Features />
-      <AboutUs />
-    </div>
-  );
-};
+	return (
+		<div>
+			<CarouselCard />
+			<Features />
+			<AboutUs />
+		</div>
+	)
+}
 
-export default Home;
+export default Home
