@@ -9,6 +9,8 @@ import { useParams } from 'react-router-dom'
 import { useStatistics } from 'redux/selectors'
 import { setStatistics } from 'redux/statistics'
 import { NotFound } from 'screens/404'
+import { monthToNumber } from './monthToNumber'
+import { monthToString } from './monthToString'
 import classes from './wells.module.css'
 
 const WellSingle = () => {
@@ -19,40 +21,43 @@ const WellSingle = () => {
 	const [time, setTime] = useState(null)
 	const [isLoading, setIsLoading] = useState(false)
 	const [value, setValue] = useState(null)
-	// console.log(value?.split())
+	const valueMonth = value ? value.toString() : ''
+	const months = monthToNumber(valueMonth.split(' ')[1])
+	const filteredYear = valueMonth?.split(' ')[3]
+	// const [grafic, setGrafic] = useState([])
 
-	const data = [
-		{
-			date: 'Mar 22',
-			Suv_sathi: 2890,
-			Suv_harorati: 2338,
-			Shorlanish: 2452,
-		},
-		{
-			date: 'Mar 23',
-			Suv_sathi: 2756,
-			Suv_harorati: 2103,
-			Shorlanish: 2402,
-		},
-		{
-			date: 'Mar 24',
-			Suv_sathi: 3322,
-			Suv_harorati: 986,
-			Shorlanish: 1821,
-		},
-		{
-			date: 'Mar 25',
-			Suv_sathi: 3470,
-			Suv_harorati: 2108,
-			Shorlanish: 2809,
-		},
-		{
-			date: 'Mar 26',
-			Suv_sathi: 3129,
-			Suv_harorati: 1726,
-			Shorlanish: 2290,
-		},
-	]
+	// const data = [
+	// 	{
+	// 		date: 'Mar 22',
+	// 		Suv_sathi: 2890,
+	// 		Suv_harorati: 2338,
+	// 		Shorlanish: 2452,
+	// 	},
+	// 	{
+	// 		date: 'Mar 23',
+	// 		Suv_sathi: 2756,
+	// 		Suv_harorati: 2103,
+	// 		Shorlanish: 2402,
+	// 	},
+	// 	{
+	// 		date: 'Mar 24',
+	// 		Suv_sathi: 3322,
+	// 		Suv_harorati: 986,
+	// 		Shorlanish: 1821,
+	// 	},
+	// 	{
+	// 		date: 'Mar 25',
+	// 		Suv_sathi: 3470,
+	// 		Suv_harorati: 2108,
+	// 		Shorlanish: 2809,
+	// 	},
+	// 	{
+	// 		date: 'Mar 26',
+	// 		Suv_sathi: 3129,
+	// 		Suv_harorati: 1726,
+	// 		Shorlanish: 2290,
+	// 	},
+	// ]
 
 	const getData = useCallback(() => {
 		setIsLoading(true)
@@ -84,7 +89,34 @@ const WellSingle = () => {
 		() => statistics.filter(stat => stat?.number === `${item?.number};`),
 		[item?.number, statistics]
 	)
-
+	const prevData = isWellStatistics.filter(
+		wells =>
+			wells?.received_at?.split('-')[0] === filteredYear &&
+			wells?.received_at?.split('-')[1] == months
+	)
+	console.log(prevData)
+	const data = []
+	for (let i = 0; i < prevData.length; i++) {
+		// console.log('time', prevData[i].received_at)
+		// console.log('water_level', prevData[i].water_level)
+		// console.log('temperature', prevData[i].temperature)
+		// console.log('salinity', prevData[i].salinity)
+		// setGrafic(e => [{ ...e, data: prevData[i].received_at }])
+		data.push({
+			data:
+				monthToString(
+					prevData[i].received_at.split('T')[0].split('-').slice(1).join('-')
+				) +
+				' ' +
+				prevData[i].received_at.split('T')[0].split('-')[2],
+			water_level: prevData[i].water_level,
+			temperature: prevData[i].temperature,
+			salinity: prevData[i].salinity,
+		})
+	}
+	// setGrafic(e => [...e, ...data])
+	// console.log('grafic', grafic)
+	console.log(data)
 	useEffect(() => {
 		getData()
 		getStat()
