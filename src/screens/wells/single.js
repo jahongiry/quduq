@@ -62,14 +62,8 @@ const WellSingle = () => {
 			wells?.received_at?.split('-')[0] === filteredYear &&
 			wells?.received_at?.split('-')[1] == months
 	)
-	console.log(prevData)
 	const data = []
 	for (let i = 0; i < prevData.length; i++) {
-		// console.log('time', prevData[i].received_at)
-		// console.log('water_level', prevData[i].water_level)
-		// console.log('temperature', prevData[i].temperature)
-		// console.log('salinity', prevData[i].salinity)
-		// setGrafic(e => [{ ...e, data: prevData[i].received_at }])
 		data.push({
 			data:
 				monthToString(
@@ -84,7 +78,6 @@ const WellSingle = () => {
 	}
 	// setGrafic(e => [...e, ...data])
 	// console.log('grafic', grafic)
-	console.log(data)
 	useEffect(() => {
 		getData()
 		getStat()
@@ -134,63 +127,13 @@ const WellSingle = () => {
 			</div>
 		</Paper>
 	))
-
 	return item?.well_id ? (
 		<>
 			<h1>{item?.name}</h1>
 			{isLoading ? (
 				<Loader />
 			) : (
-				// <div className={classes.root}>
-				// <Group style={{ flex: 1 }}>
-				// 	<Group display={'grid'} ta={'center'} c={'#fff'}>
-				// 		<Button
-				// 			disabled={
-				// 				!isWellStatistics?.length ||
-				// 				index + 1 === isWellStatistics?.length
-				// 			}
-				// 			color={'green'}
-				// 			onClick={() =>
-				// 				setIndex(_index => {
-				// 					if (_index + 1 === isWellStatistics?.length) {
-				// 						return _index
-				// 					}
-				// 					return _index + 1
-				// 				})
-				// 			}
-				// 		>
-				// 			<IconArrowUp />
-				// 		</Button>
-				// 		<Text>
-				// 			{moment(isWellStatistics[index]?.received_at).format(
-				// 				'DD/MM/YYYY'
-				// 			)}
-				// 			{console.log('kkkkkk', isWellStatistics[index]?.received_at)}
-				// 		</Text>
-				// 		<Text>
-				// 			{moment(isWellStatistics[index]?.received_at).format(
-				// 				'HH:MM:SS'
-				// 			)}
-				// 		</Text>
-				// 		<Button
-				// 			disabled={!isWellStatistics?.length || index === 0}
-				// 			color={'green'}
-				// 			onClick={() =>
-				// 				setIndex(_index => {
-				// 					if (_index === 0) {
-				// 						return _index
-				// 					}
-				// 					return _index - 1
-				// 				})
-				// 			}
-				// 		>
-				// 			<IconArrowDown />
-				// 		</Button>
-				// 	</Group>
-				// 	{stats}
-				// </Group>
-				// </div>
-				<div className={classes.root}>
+				<div className={classes.root} style={{ position: 'relative' }}>
 					<Group style={{ flex: 1 }}>
 						<Group
 							display={'grid'}
@@ -214,6 +157,13 @@ const WellSingle = () => {
 								</Button>
 							))}
 						</Group>
+						<p className={classes.date}>
+							{
+								isWellStatistics[
+									isWellStatistics.length - 1
+								]?.received_at.split('T')[0]
+							}
+						</p>
 						{stats}
 					</Group>
 				</div>
