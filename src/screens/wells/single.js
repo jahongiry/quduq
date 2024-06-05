@@ -1,8 +1,7 @@
-import { LineChart } from '@mantine/charts'
 import { Button, Group, Loader, Paper, Text, rem } from '@mantine/core'
-import { MonthPicker } from '@mantine/dates'
 import { IconCookie, IconTemperature, IconWaterpolo } from '@tabler/icons-react'
 import { getStatistics, getWells } from 'api'
+import { DataPicker } from 'components/datapicker/DataPicker'
 import { convertTo24Hours } from 'context/format24Hours'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
@@ -22,10 +21,17 @@ const WellSingle = () => {
 	const [item, setItem] = useState({})
 	const [time, setTime] = useState(null)
 	const [isLoading, setIsLoading] = useState(false)
-	const [value, setValue] = useState(null)
-	const valueMonth = value ? value.toString() : ''
+	// const [value, setValue] = useState(null)
+	const [mem, setMem] = useState(new Date())
+	const [dataPickerDate, setDataPickerDate] = useState('')
+	const [currentData, setCurrentData] = useState([])
+	// const valueMonth = value ? value.toString() : ''
+	const valueMonth = ''
 	const months = monthToNumber(valueMonth.split(' ')[1])
 	const filteredYear = valueMonth?.split(' ')[3]
+	console.log('dataPickerDate', dataPickerDate)
+	// console.log(statistics,)
+	console.log('currentData', currentData)
 
 	const getData = useCallback(() => {
 		setIsLoading(true)
@@ -39,6 +45,31 @@ const WellSingle = () => {
 				console.log(message)
 			})
 	}, [id])
+
+	// console.log(statistics.filter(stat => stat?.number === `${item?.number};`).filter(well => well.received_at.split('T')[0] === ))
+	// console.log(
+	// 	`${mem.toString().split(' ')[2]}-${monthToNumber(
+	// 		mem.toString().split(' ')[1]
+	// 	)}-${mem.toString().split(' ')[3]}`
+	// )
+	console.log()
+	useEffect(() => {
+		setDataPickerDate(monthToNumber(mem.toString().split(' ')[1]))
+		// monthToNumber(mem.toString().split(' ')[1]),
+		// mem.toString().split(' ')[3],
+		// mem.toString().split(' ')[2])
+		setCurrentData(
+			statistics
+				.filter(stat => stat?.number === `${item?.number};`)
+				.filter(
+					el =>
+						el?.received_at.split('T')[0] ==
+						`${mem.toString().split(' ')[3]}-${monthToNumber(
+							mem.toString().split(' ')[1]
+						)}-${mem.toString().split(' ')[2]}`
+				)
+		)
+	}, [setMem])
 
 	const getStat = useCallback(() => {
 		getStatistics()
@@ -76,8 +107,6 @@ const WellSingle = () => {
 			salinity: prevData[i].salinity,
 		})
 	}
-	// setGrafic(e => [...e, ...data])
-	// console.log('grafic', grafic)
 	useEffect(() => {
 		getData()
 		getStat()
@@ -89,19 +118,23 @@ const WellSingle = () => {
 		{
 			icon: IconWaterpolo,
 			label: 'Suv yer sathidan',
-			value: `${myWellStatics?.water_level} SM`,
+			value: myWellStatics?.water_level
+				? `${myWellStatics?.water_level} SM`
+				: 'malumot yoq',
 			color: 'aqua',
 		},
 		{
 			icon: IconTemperature,
 			label: 'Suv harorati',
-			value: `${myWellStatics?.temperature} ℃`,
+			value: myWellStatics?.temperature
+				? `${myWellStatics?.temperature} ℃`
+				: 'malumot yoq',
 			color: '#FAB005',
 		},
 		{
 			icon: IconCookie,
 			label: "Sho'rlanish darajasi",
-			value: myWellStatics?.salinity,
+			value: myWellStatics?.salinity ? myWellStatics?.salinity : 'malumot yoq',
 			color: '#FA5252',
 		},
 	]
@@ -141,22 +174,46 @@ const WellSingle = () => {
 							c={'#fff'}
 							className={classes.hours}
 						>
-							{isWellStatistics.map(hours => (
-								<Button
-									key={hours?.message_id}
-									onClick={() => setTime(hours?.received_at)}
-									className={hours.received_at === time ? 'active_btn' : ''}
-								>
-									{convertTo24Hours(
-										addFiveHours(
-											`${hours?.received_at.split(':')[0].split('T')[1]}:${
-												hours?.received_at.split(':')[1]
-											}:${hours?.received_at.split(':')[2]}`
-										)
-									)}
-								</Button>
-							))}
+							{statistics
+								.filter(stat => stat?.number === `${item?.number};`)
+								.filter(
+									el =>
+										el?.received_at.split('T')[0] ==
+										`${mem.toString().split(' ')[3]}-${monthToNumber(
+											mem.toString().split(' ')[1]
+										)}-${mem.toString().split(' ')[2]}`
+								).length > 0
+								? 	statistics
+								.filter(stat => stat?.number === `${item?.number};`)
+								.filter(
+									el =>
+										el?.received_at.split('T')[0] ==
+										`${mem.toString().split(' ')[3]}-${monthToNumber(
+											mem.toString().split(' ')[1]
+										)}-${mem.toString().split(' ')[2]}`
+								).map(hours => (
+										<Button
+											key={hours?.message_id}
+											onClick={() => setTime(hours?.received_at)}
+											className={hours.received_at === time ? 'active_btn' : ''}
+										>
+											{convertTo24Hours(
+												addFiveHours(
+													`${hours?.received_at.split(':')[0].split('T')[1]}:${
+														hours?.received_at.split(':')[1]
+													}:${hours?.received_at.split(':')[2]}`
+												)
+											)}
+										</Button>))
+								: 'malumot yoq'}
 						</Group>
+						<div className={classes.data_picker}>
+							<DataPicker
+								setMem={setMem}
+								mem={mem}
+								setDataPickerDate={setDataPickerDate}
+							/>
+						</div>
 						<p className={classes.date}>
 							{
 								isWellStatistics[
@@ -168,7 +225,7 @@ const WellSingle = () => {
 					</Group>
 				</div>
 			)}
-			<div className={classes.bottom}>
+			{/* <div className={classes.bottom}>
 				<div className={classes.month_picker}>
 					<MonthPicker value={value} onChange={setValue} />
 				</div>
@@ -183,7 +240,7 @@ const WellSingle = () => {
 					]}
 					curveType='linear'
 				/>
-			</div>
+			</div> */}
 			<iframe
 				className={classes.iframe}
 				title={item.name}

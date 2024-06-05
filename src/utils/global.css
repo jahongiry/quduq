@@ -1,28 +1,31 @@
 :root[data-mantine-color-scheme='dark'] {
-  --mantine-color-body: var(--mantine-color-dark-8);
+	--mantine-color-body: var(--mantine-color-dark-8);
 }
 @keyframes Bar {
-  0% {
-    color: rgba(226, 192, 68, 0);
-  }
-  50% {
-    color: #fff;
-  }
-  100% {
-    color: rgba(226, 192, 68, 0);
-  }
+	0% {
+		color: rgba(226, 192, 68, 0);
+	}
+	50% {
+		color: #fff;
+	}
+	100% {
+		color: rgba(226, 192, 68, 0);
+	}
 }
 .custom-caret {
-  animation: Bar 1s step-end infinite;
-  padding-left: 2px;
+	animation: Bar 1s step-end infinite;
+	padding-left: 2px;
 }
 
 .caret-label .custom-caret {
-  display: none;
+	display: none;
 }
 .caret-label:has(input:focus) .custom-caret {
-  display: inline;
+	display: inline;
 }
 .active_btn {
-  background-color: #0c345a;
+	background-color: #0c345a;
+}
+.m-8fdc1311 {
+	display: none !important;
 }

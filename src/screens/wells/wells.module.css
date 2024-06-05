@@ -18,7 +18,7 @@
 	);
 	padding: var(--mantine-spacing-xl);
 	border-radius: var(--mantine-radius-md);
-	padding-top: 60px;
+	padding-top: 80px;
 	width: 100%;
 }
 @media (max-width: 576px) {
@@ -61,6 +61,11 @@
 	font-size: 20px;
 	color: #eee;
 }
+.data_picker {
+	position: absolute;
+	top: 30px;
+	width: 170px;
+}
 .label {
 	text-transform: uppercase;
 	font-weight: 700;
@@ -91,4 +96,16 @@
 	border: 0;
 	border-radius: var(--mantine-spacing-sm);
 	margin-top: var(--mantine-spacing-lg);
+}
+@media (max-width: 550px) {
+	.root {
+		padding-top: 150px;
+	}
+	.data_picker {
+		left: 50%;
+		translate: -50% 0;
+	}
+	.date {
+		top: 60px;
+	}
 }
