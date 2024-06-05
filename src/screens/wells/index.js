@@ -22,6 +22,7 @@ import {
 import { getStatistics, getWells, wellDelete } from 'api'
 import AddWells from 'components/add-weels'
 import { sendMessage } from 'components/request-modal'
+import { convertTo24Hours } from 'context/format24Hours'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link, useLocation } from 'react-router-dom'
@@ -30,6 +31,7 @@ import { setLoading } from 'redux/loading'
 import { useLoading, useUser, useWells } from 'redux/selectors'
 import { setWells } from 'redux/wells'
 import { sendDeletedWells } from 'utils'
+import { addFiveHours } from './addFiveHours'
 import Th from './th'
 import { timeComparison } from './timeComparison'
 
@@ -87,6 +89,7 @@ export default function Wells() {
 	const [reverseSortDirection, setReverseSortDirection] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const [staticsData, setStaticsData] = useState([])
+	const [status, setStatus] = useState(false)
 
 	const getStat = useCallback(() => {
 		getStatistics()
@@ -119,7 +122,10 @@ export default function Wells() {
 	}, [data])
 	useEffect(() => {
 		getStat()
-	}, [getStat, pathname])
+	}, [getStat, pathname, status])
+	useEffect(() => {
+		getData()
+	}, [getData, pathname, status])
 
 	const setSorting = field => {
 		const reversed = field === sortBy ? !reverseSortDirection : false
@@ -183,7 +189,6 @@ export default function Wells() {
 		},
 		[dispatch, getData, user]
 	)
-	// console.log('ok', timeComparison('5:49:03'))
 	const rows = useMemo(
 		() =>
 			sortedData?.map((row, key) => (
@@ -191,39 +196,35 @@ export default function Wells() {
 					<Table.Td style={{ cursor: 'pointer' }}>
 						<Link to={`/well/${row?.well_id}`}>{row?.name}</Link>
 					</Table.Td>
-					{user?.user_id && (
-						<Table.Td>
-							<Flex align={'center'}>
-								<Text pr={'lg'}>Quduq holati</Text>
-								<Indicator
-									zIndex={1}
-									color={
-										console.log(
-											// timeComparison(
-											// 	convertTo24Hours(
-											// 		addFiveHours(
-											// 			myLatestSingleData.find(
-											// 				el => el[0]?.data?.number === row?.number + ';'
-											// 			)
-											// 				? myLatestSingleData
-											// 						.find(
-											// 							el =>
-											// 								el[0]?.data?.number === row?.number + ';'
-											// 						)[0]
-											// 						?.data?.received_at.split('T')[1]
-											// 				: null
-											// 		)
-											// 	)
-											// )
-											timeComparison('22:50:50')
+					{/* {user?.user_id && ( */}
+					<Table.Td>
+						<Flex align={'center'}>
+							<Text pr={'lg'}>Quduq holati</Text>
+							<Indicator
+								zIndex={1}
+								color={
+									timeComparison(
+										convertTo24Hours(
+											addFiveHours(
+												myLatestSingleData.find(
+													el => el[0]?.data?.number === row?.number + ';'
+												)
+													? myLatestSingleData
+															.find(
+																el => el[0]?.data?.number === row?.number + ';'
+															)[0]
+															?.data?.received_at.split('T')[1]
+													: null
+											)
 										)
-											? 'blue'
-											: 'red'
-									}
-								/>
-							</Flex>
-						</Table.Td>
-					)}
+									)
+										? 'blue'
+										: 'red'
+								}
+							/>
+						</Flex>
+					</Table.Td>
+					{/* )} */}
 					<Table.Td
 						style={{
 							cursor: 'pointer',
@@ -312,6 +313,9 @@ export default function Wells() {
 				value={search}
 				onChange={handleSearchChange}
 			/>
+			<Button style={{ margin: '20px 0' }} onClick={() => setStatus(v => !v)}>
+				Quduq xolatini tekshirish
+			</Button>
 			{loading || isLoading ? (
 				<Center>
 					<Loader />
