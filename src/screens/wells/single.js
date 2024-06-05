@@ -3,12 +3,14 @@ import { Button, Group, Loader, Paper, Text, rem } from '@mantine/core'
 import { MonthPicker } from '@mantine/dates'
 import { IconCookie, IconTemperature, IconWaterpolo } from '@tabler/icons-react'
 import { getStatistics, getWells } from 'api'
+import { convertTo24Hours } from 'context/format24Hours'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { useStatistics } from 'redux/selectors'
 import { setStatistics } from 'redux/statistics'
 import { NotFound } from 'screens/404'
+import { addFiveHours } from './addFiveHours'
 import { monthToNumber } from './monthToNumber'
 import { monthToString } from './monthToString'
 import classes from './wells.module.css'
@@ -24,40 +26,6 @@ const WellSingle = () => {
 	const valueMonth = value ? value.toString() : ''
 	const months = monthToNumber(valueMonth.split(' ')[1])
 	const filteredYear = valueMonth?.split(' ')[3]
-	// const [grafic, setGrafic] = useState([])
-
-	// const data = [
-	// 	{
-	// 		date: 'Mar 22',
-	// 		Suv_sathi: 2890,
-	// 		Suv_harorati: 2338,
-	// 		Shorlanish: 2452,
-	// 	},
-	// 	{
-	// 		date: 'Mar 23',
-	// 		Suv_sathi: 2756,
-	// 		Suv_harorati: 2103,
-	// 		Shorlanish: 2402,
-	// 	},
-	// 	{
-	// 		date: 'Mar 24',
-	// 		Suv_sathi: 3322,
-	// 		Suv_harorati: 986,
-	// 		Shorlanish: 1821,
-	// 	},
-	// 	{
-	// 		date: 'Mar 25',
-	// 		Suv_sathi: 3470,
-	// 		Suv_harorati: 2108,
-	// 		Shorlanish: 2809,
-	// 	},
-	// 	{
-	// 		date: 'Mar 26',
-	// 		Suv_sathi: 3129,
-	// 		Suv_harorati: 1726,
-	// 		Shorlanish: 2290,
-	// 	},
-	// ]
 
 	const getData = useCallback(() => {
 		setIsLoading(true)
@@ -236,9 +204,13 @@ const WellSingle = () => {
 									onClick={() => setTime(hours?.received_at)}
 									className={hours.received_at === time ? 'active_btn' : ''}
 								>
-									{`${hours?.received_at.split(':')[0].split('T')[1]}:${
-										hours?.received_at.split(':')[1]
-									}:${hours?.received_at.split(':')[2]}`}
+									{convertTo24Hours(
+										addFiveHours(
+											`${hours?.received_at.split(':')[0].split('T')[1]}:${
+												hours?.received_at.split(':')[1]
+											}:${hours?.received_at.split(':')[2]}`
+										)
+									)}
 								</Button>
 							))}
 						</Group>

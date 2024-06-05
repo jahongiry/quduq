@@ -30,7 +30,6 @@ import { setLoading } from 'redux/loading'
 import { useLoading, useUser, useWells } from 'redux/selectors'
 import { setWells } from 'redux/wells'
 import { sendDeletedWells } from 'utils'
-import { addFiveHours } from './addFiveHours'
 import Th from './th'
 import { timeComparison } from './timeComparison'
 
@@ -79,7 +78,6 @@ export default function Wells() {
 	const dispatch = useDispatch()
 	const loading = useLoading()
 	const { pathname } = useLocation()
-	console.log('params', pathname)
 	const data = useWells()
 	const user = useUser()
 	const [search, setSearch] = useState('')
@@ -185,6 +183,7 @@ export default function Wells() {
 		},
 		[dispatch, getData, user]
 	)
+	// console.log('ok', timeComparison('5:49:03'))
 	const rows = useMemo(
 		() =>
 			sortedData?.map((row, key) => (
@@ -199,18 +198,24 @@ export default function Wells() {
 								<Indicator
 									zIndex={1}
 									color={
-										timeComparison(
-											addFiveHours(
-												myLatestSingleData.find(
-													el => el[0]?.data?.number === row?.number + ';'
-												)
-													? myLatestSingleData
-															.find(
-																el => el[0]?.data?.number === row?.number + ';'
-															)[0]
-															?.data?.received_at.split('T')[1]
-													: null
-											)
+										console.log(
+											// timeComparison(
+											// 	convertTo24Hours(
+											// 		addFiveHours(
+											// 			myLatestSingleData.find(
+											// 				el => el[0]?.data?.number === row?.number + ';'
+											// 			)
+											// 				? myLatestSingleData
+											// 						.find(
+											// 							el =>
+											// 								el[0]?.data?.number === row?.number + ';'
+											// 						)[0]
+											// 						?.data?.received_at.split('T')[1]
+											// 				: null
+											// 		)
+											// 	)
+											// )
+											timeComparison('22:50:50')
 										)
 											? 'blue'
 											: 'red'
@@ -219,10 +224,6 @@ export default function Wells() {
 							</Flex>
 						</Table.Td>
 					)}
-
-					{/* <Table.Td>
-						<a href={'tel:' + row?.number}>{row?.number}</a>
-					</Table.Td> */}
 					<Table.Td
 						style={{
 							cursor: 'pointer',
