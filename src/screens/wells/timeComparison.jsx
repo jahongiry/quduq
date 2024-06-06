@@ -1,7 +1,8 @@
 import moment from 'moment'
 
-export function timeComparison(givenTime) {
-	const givenMoment = moment(givenTime, 'HH:mm:ss')
+export function timeComparison(givenTime, givenDate) {
+	const givenDateTime = `${givenDate} ${givenTime}`
+	const givenMoment = moment(givenDateTime, 'YYYY-MM-DD HH:mm:ss')
 
 	const now = moment()
 

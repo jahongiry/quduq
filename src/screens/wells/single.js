@@ -1,4 +1,5 @@
 import { Button, Group, Loader, Paper, Text, rem } from '@mantine/core'
+import '@mantine/core/styles.css'
 import { IconCookie, IconTemperature, IconWaterpolo } from '@tabler/icons-react'
 import { getStatistics, getWells } from 'api'
 import { DataPicker } from 'components/datapicker/DataPicker'
@@ -52,12 +53,40 @@ const WellSingle = () => {
 	// 		mem.toString().split(' ')[1]
 	// 	)}-${mem.toString().split(' ')[3]}`
 	// )
-	console.log()
+	const data = [
+		{
+			date: 'Mar 22',
+			water_level: 23.5,
+			temperature: 26.6,
+			salinity: 949,
+		},
+		{
+			date: 'Mar 23',
+			water_level: 15.5,
+			temperature: 10.6,
+			salinity: 549,
+		},
+		{
+			date: 'Mar 25',
+			water_level: 50.5,
+			temperature: 30.6,
+			salinity: 679,
+		},
+		{
+			date: 'Mar 29',
+			water_level: 2.5,
+			temperature: 2.6,
+			salinity: 1009,
+		},
+		{
+			date: 'Mar 30',
+			water_level: 23.5,
+			temperature: 26.6,
+			salinity: 949,
+		},
+	]
 	useEffect(() => {
 		setDataPickerDate(monthToNumber(mem.toString().split(' ')[1]))
-		// monthToNumber(mem.toString().split(' ')[1]),
-		// mem.toString().split(' ')[3],
-		// mem.toString().split(' ')[2])
 		setCurrentData(
 			statistics
 				.filter(stat => stat?.number === `${item?.number};`)
@@ -70,7 +99,10 @@ const WellSingle = () => {
 				)
 		)
 	}, [setMem])
-
+	console.log(
+		'water',
+		statistics.filter(stat => stat?.number === `${item?.number};`)
+	)
 	const getStat = useCallback(() => {
 		getStatistics()
 			.then(({ data }) => {
@@ -93,7 +125,6 @@ const WellSingle = () => {
 			wells?.received_at?.split('-')[0] === filteredYear &&
 			wells?.received_at?.split('-')[1] == months
 	)
-	const data = []
 	for (let i = 0; i < prevData.length; i++) {
 		data.push({
 			data:
@@ -118,7 +149,15 @@ const WellSingle = () => {
 		{
 			icon: IconWaterpolo,
 			label: 'Suv yer sathidan',
-			value: myWellStatics?.water_level
+			value: statistics
+				.filter(stat => stat?.number === `${item?.number};`)
+				.filter(
+					el =>
+						el?.received_at.split('T')[0] ==
+						`${mem.toString().split(' ')[3]}-${monthToNumber(
+							mem.toString().split(' ')[1]
+						)}-${mem.toString().split(' ')[2]}`
+				).length
 				? `${myWellStatics?.water_level} SM`
 				: 'malumot yoq',
 			color: 'aqua',
@@ -126,7 +165,15 @@ const WellSingle = () => {
 		{
 			icon: IconTemperature,
 			label: 'Suv harorati',
-			value: myWellStatics?.temperature
+			value: statistics
+				.filter(stat => stat?.number === `${item?.number};`)
+				.filter(
+					el =>
+						el?.received_at.split('T')[0] ==
+						`${mem.toString().split(' ')[3]}-${monthToNumber(
+							mem.toString().split(' ')[1]
+						)}-${mem.toString().split(' ')[2]}`
+				).length
 				? `${myWellStatics?.temperature} ℃`
 				: 'malumot yoq',
 			color: '#FAB005',
@@ -134,7 +181,17 @@ const WellSingle = () => {
 		{
 			icon: IconCookie,
 			label: "Sho'rlanish darajasi",
-			value: myWellStatics?.salinity ? myWellStatics?.salinity : 'malumot yoq',
+			value: statistics
+				.filter(stat => stat?.number === `${item?.number};`)
+				.filter(
+					el =>
+						el?.received_at.split('T')[0] ==
+						`${mem.toString().split(' ')[3]}-${monthToNumber(
+							mem.toString().split(' ')[1]
+						)}-${mem.toString().split(' ')[2]}`
+				).length
+				? myWellStatics?.salinity
+				: 'malumot yoq',
 			color: '#FA5252',
 		},
 	]
@@ -183,28 +240,34 @@ const WellSingle = () => {
 											mem.toString().split(' ')[1]
 										)}-${mem.toString().split(' ')[2]}`
 								).length > 0
-								? 	statistics
-								.filter(stat => stat?.number === `${item?.number};`)
-								.filter(
-									el =>
-										el?.received_at.split('T')[0] ==
-										`${mem.toString().split(' ')[3]}-${monthToNumber(
-											mem.toString().split(' ')[1]
-										)}-${mem.toString().split(' ')[2]}`
-								).map(hours => (
-										<Button
-											key={hours?.message_id}
-											onClick={() => setTime(hours?.received_at)}
-											className={hours.received_at === time ? 'active_btn' : ''}
-										>
-											{convertTo24Hours(
-												addFiveHours(
-													`${hours?.received_at.split(':')[0].split('T')[1]}:${
-														hours?.received_at.split(':')[1]
-													}:${hours?.received_at.split(':')[2]}`
-												)
-											)}
-										</Button>))
+								? statistics
+										.filter(stat => stat?.number === `${item?.number};`)
+										.filter(
+											el =>
+												el?.received_at.split('T')[0] ==
+												`${mem.toString().split(' ')[3]}-${monthToNumber(
+													mem.toString().split(' ')[1]
+												)}-${mem.toString().split(' ')[2]}`
+										)
+										.map(hours => (
+											<Button
+												key={hours?.message_id}
+												onClick={() => setTime(hours?.received_at)}
+												className={
+													hours.received_at === time ? 'active_btn' : ''
+												}
+											>
+												{convertTo24Hours(
+													addFiveHours(
+														`${
+															hours?.received_at.split(':')[0].split('T')[1]
+														}:${hours?.received_at.split(':')[1]}:${
+															hours?.received_at.split(':')[2]
+														}`
+													)
+												)}
+											</Button>
+										))
 								: 'malumot yoq'}
 						</Group>
 						<div className={classes.data_picker}>
@@ -230,17 +293,18 @@ const WellSingle = () => {
 					<MonthPicker value={value} onChange={setValue} />
 				</div>
 				<LineChart
-					h={350}
+					h={300}
 					data={data}
 					dataKey='date'
 					series={[
-						{ name: 'Suv_sathi', color: 'blue.6' },
-						{ name: 'Shorlanish', color: 'red.6' },
-						{ name: 'Suv_harorati', color: 'yellow.6' },
+						{ name: 'water_level', color: 'indigo.6' },
+						{ name: 'temperature', color: 'blue.6' },
+						{ name: 'salinity', color: 'teal.6' },
 					]}
 					curveType='linear'
 				/>
 			</div> */}
+
 			<iframe
 				className={classes.iframe}
 				title={item.name}

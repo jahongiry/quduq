@@ -29,3 +29,21 @@
 .m-8fdc1311 {
 	display: none !important;
 }
+
+.recharts-tooltip-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 200px;
+	/* width: auto; */
+	border-radius: 8px;
+	background-color: #333;
+	color: #eee;
+	padding: 10px 0;
+}
+.recharts-tooltip-wrapper-top div {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}

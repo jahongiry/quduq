@@ -196,7 +196,6 @@ export default function Wells() {
 					<Table.Td style={{ cursor: 'pointer' }}>
 						<Link to={`/well/${row?.well_id}`}>{row?.name}</Link>
 					</Table.Td>
-					{/* {user?.user_id && ( */}
 					<Table.Td>
 						<Flex align={'center'}>
 							<Text pr={'lg'}>Quduq holati</Text>
@@ -216,7 +215,16 @@ export default function Wells() {
 															?.data?.received_at.split('T')[1]
 													: null
 											)
+										),
+										myLatestSingleData.find(
+											el => el[0]?.data?.number === row?.number + ';'
 										)
+											? myLatestSingleData
+													.find(
+														el => el[0]?.data?.number === row?.number + ';'
+													)[0]
+													?.data?.received_at.split('T')[0]
+											: null
 									)
 										? 'blue'
 										: 'red'
@@ -224,7 +232,6 @@ export default function Wells() {
 							/>
 						</Flex>
 					</Table.Td>
-					{/* )} */}
 					<Table.Td
 						style={{
 							cursor: 'pointer',
