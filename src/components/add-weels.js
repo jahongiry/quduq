@@ -1,17 +1,17 @@
 /* eslint-disable react/prop-types */
-import { useForm } from '@mantine/form';
-import { useDisclosure } from '@mantine/hooks';
-import { IconPlus } from '@tabler/icons-react';
-import { Modal, Button, TextInput, Group, Tooltip } from '@mantine/core';
-import { getWells, wellCreate, wellUpdate } from 'api';
-import { useCallback, useEffect, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
-import { setLoading } from 'redux/loading';
-import { setWells } from 'redux/wells';
-import { toast } from 'react-toastify';
-import { sendEditedWells } from 'utils';
-import { useUser } from 'redux/selectors';
-import { sendMessage } from './request-modal';
+import { useForm } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
+import { IconPlus } from "@tabler/icons-react";
+import { Modal, Button, TextInput, Group, Tooltip } from "@mantine/core";
+import { getWells, wellCreate, wellUpdate } from "api";
+import { useCallback, useEffect, useMemo } from "react";
+import { useDispatch } from "react-redux";
+import { setLoading } from "redux/loading";
+import { setWells } from "redux/wells";
+import { toast } from "react-toastify";
+import { sendEditedWells } from "utils";
+import { useUser } from "redux/selectors";
+import { sendMessage } from "./request-modal";
 
 export default function AddWells({ initialValues, id = null, onClose }) {
   const user = useUser();
@@ -19,15 +19,19 @@ export default function AddWells({ initialValues, id = null, onClose }) {
   const [opened, { open, close }] = useDisclosure(false);
   const form = useForm({
     initialValues: {
-      name: '',
-      number: '',
-      address: '',
-      latitude: '',
-      longitude: ''
+      name: "",
+      number: "",
+      address: "",
+      latitude: "",
+      longitude: "",
+      depth: "",
     },
     validate: {
-      number: (value) => ([9, 12].includes(value?.length) ? undefined : "Telefon raqami formati noto'g'ri")
-    }
+      number: (value) =>
+        [9, 12].includes(value?.length)
+          ? undefined
+          : "Telefon raqami formati noto'g'ri",
+    },
   });
   const setValue = form.setValues;
   const reset = form.reset;
@@ -39,7 +43,8 @@ export default function AddWells({ initialValues, id = null, onClose }) {
         number: initialValues?.number,
         address: initialValues?.address,
         latitude: initialValues?.latitude,
-        longitude: initialValues?.longitude
+        longitude: initialValues?.longitude,
+        depth: initialValues?.depth,
       });
     } else reset();
   }, [initialValues, id, open, setValue, reset]);
@@ -48,7 +53,9 @@ export default function AddWells({ initialValues, id = null, onClose }) {
     () =>
       Boolean(
         !Object.keys(form.values).filter((item) => {
-          return initialValues?.[item]?.trimEnd() !== form.values?.[item]?.trimEnd();
+          return (
+            initialValues?.[item]?.trimEnd() !== form.values?.[item]?.trimEnd()
+          );
         }).length
       ),
     [form.values, initialValues]
@@ -81,7 +88,7 @@ export default function AddWells({ initialValues, id = null, onClose }) {
               adminName: user?.name,
               phone: values?.number,
               wellName: values?.name,
-              wellId: initialValues?.well_id
+              wellId: initialValues?.well_id,
             }),
             setLoading,
             close
@@ -89,7 +96,7 @@ export default function AddWells({ initialValues, id = null, onClose }) {
           getData();
         })
         .catch((err) => {
-          toast.error(err.message || 'Xatolik');
+          toast.error(err.message || "Xatolik");
           dispatch(setLoading(false));
           console.log(err);
         });
@@ -101,7 +108,7 @@ export default function AddWells({ initialValues, id = null, onClose }) {
           toast.success(data.message);
         })
         .catch((err) => {
-          toast.error(err.message || 'Xatolik');
+          toast.error(err.message || "Xatolik");
           dispatch(setLoading(false));
           console.log(err);
         });
@@ -109,10 +116,13 @@ export default function AddWells({ initialValues, id = null, onClose }) {
   };
 
   function formatTelephoneNumber(phoneNumber) {
-    const cleaned = phoneNumber.replace(/\D/g, ''); // Faqat raqamni olish
+    const cleaned = phoneNumber.replace(/\D/g, ""); // Faqat raqamni olish
 
     // Formatlash
-    const formatted = `+${cleaned.slice(0, 3)} (${cleaned.slice(3, 5)}) ${cleaned.slice(5, 8)}-${cleaned.slice(8, 10)}-${cleaned.slice(
+    const formatted = `+${cleaned.slice(0, 3)} (${cleaned.slice(
+      3,
+      5
+    )}) ${cleaned.slice(5, 8)}-${cleaned.slice(8, 10)}-${cleaned.slice(
       10,
       12
     )}`;
@@ -128,46 +138,84 @@ export default function AddWells({ initialValues, id = null, onClose }) {
           close();
           id && onClose();
         }}
-        title={`Quduq${id ? 'ni yangilash' : ' yaratish'} `}
+        title={`Quduq${id ? "ni yangilash" : " yaratish"} `}
         centered
       >
         <form onSubmit={form.onSubmit(onSubmit)}>
-          <TextInput label="Nomi" placeholder="Nomi" m={'md'} {...form.getInputProps('name')} />
-          <div className="caret-label" style={{ position: 'relative' }}>
+          <TextInput
+            label="Nomi"
+            placeholder="Nomi"
+            m={"md"}
+            {...form.getInputProps("name")}
+          />
+          <div className="caret-label" style={{ position: "relative" }}>
             <p
               style={{
-                display: form.getInputProps('number').error ? 'none' : 'inline-block',
-                position: 'absolute',
-                zIndex: [3, 5, 8, 10, 12].includes(form.getInputProps('number')?.value?.length) ? 2 : -1,
-                bottom: '-10px',
-                left: '29px',
-                right: '30px',
-                height: '25px',
-                pointerEvents: 'none',
-                background: '#2e2e2e',
-                fontSize: 'var(--_input-fz,var(--input-fz,var(--mantine-font-size-sm)))'
+                display: form.getInputProps("number").error
+                  ? "none"
+                  : "inline-block",
+                position: "absolute",
+                zIndex: [3, 5, 8, 10, 12].includes(
+                  form.getInputProps("number")?.value?.length
+                )
+                  ? 2
+                  : -1,
+                bottom: "-10px",
+                left: "29px",
+                right: "30px",
+                height: "25px",
+                pointerEvents: "none",
+                background: "#2e2e2e",
+                fontSize:
+                  "var(--_input-fz,var(--input-fz,var(--mantine-font-size-sm)))",
               }}
             >
-              {formatTelephoneNumber(form.getInputProps('number').value)}
+              {formatTelephoneNumber(form.getInputProps("number").value)}
               <span className="custom-caret">|</span>
             </p>
             <TextInput
               label="Telefon raqami"
               type="number"
-              m={'md'}
+              m={"md"}
               withAsterisk
-              placeholder={'+998 (77) 123-45-67'}
-              {...form.getInputProps('number')}
+              placeholder={"+998 (77) 123-45-67"}
+              {...form.getInputProps("number")}
               onChange={(e) => {
-                e.target.value?.length > 12 ? null : form.getInputProps('number')?.onChange(e);
+                e.target.value?.length > 12
+                  ? null
+                  : form.getInputProps("number")?.onChange(e);
               }}
             />
           </div>
-          <TextInput label="Manzil" placeholder="address" m={'md'} {...form.getInputProps('address')} />
-          <TextInput label="Latitude" placeholder="latitude" m={'md'} {...form.getInputProps('latitude')} />
-          <TextInput label="Longitude" placeholder="longitude" m={'md'} {...form.getInputProps('longitude')} />
+          <TextInput
+            label="Manzil"
+            placeholder="Manzili"
+            m={"md"}
+            {...form.getInputProps("address")}
+          />
+          <TextInput
+            label="Latitude"
+            placeholder="Kenglikgi"
+            m={"md"}
+            {...form.getInputProps("latitude")}
+          />
+          <TextInput
+            label="Longitude"
+            placeholder="Uzunligi"
+            m={"md"}
+            {...form.getInputProps("longitude")}
+          />{" "}
+          <TextInput
+            label="Well depth"
+            placeholder="Quduq chuqurligi"
+            m={"md"}
+            {...form.getInputProps("depth")}
+          />
           <Group justify="flex-end">
-            <Tooltip color={noEditedForm ? 'red ' : 'blue'} label={noEditedForm ? "O'zgarish kiritilmagan" : 'Yuborish'}>
+            <Tooltip
+              color={noEditedForm ? "red " : "blue"}
+              label={noEditedForm ? "O'zgarish kiritilmagan" : "Yuborish"}
+            >
               <Button disabled={noEditedForm} type="submit">
                 {"Jo'natish"}
               </Button>
