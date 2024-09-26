@@ -88,7 +88,9 @@ const WellSingle = () => {
     {
       icon: IconCookie,
       label: "Sho'rlanish darajasi",
-      value: selectedOption?.salinity || "malumot yoq",
+      value:
+        (parseFloat(selectedOption?.salinity) / 1000).toFixed(2) ||
+        "malumot yoq",
       color: "#FA5252",
     },
   ];
