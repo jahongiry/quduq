@@ -82,9 +82,12 @@ const WellSingle = () => {
     {
       icon: IconTemperature,
       label: "Suv harorati",
-      value: selectedOption?.temperature || "malumot yoq",
+
+      value:
+        parseFloat(selectedOption?.temperature).toFixed(2) || "malumot yoq",
       color: "#FAB005",
     },
+
     {
       icon: IconCookie,
       label: "Sho'rlanish darajasi",
@@ -94,7 +97,7 @@ const WellSingle = () => {
       color: "#FA5252",
     },
   ];
-
+  console.log(typeof selectedOption?.temperature);
   const stats = options.map((well) => (
     <Paper
       className={classes.stat}
