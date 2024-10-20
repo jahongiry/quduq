@@ -13,6 +13,18 @@
 .links a {
   text-decoration: none;
 }
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.link > img {
+  width: 20px;
+  height: 20px;
+}
+
 @media (max-width: 768px) {
   .inner {
     flex-direction: column;

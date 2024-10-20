@@ -2,7 +2,7 @@ import axios from "axios";
 import { BASE_URL } from "utils/constants";
 
 export const getWells = (id, method = "get", body) => {
-  const request = axios[method](`${BASE_URL}wells${id ? "/" + id : ""}`, body);
+  const request = axios[method](`${BASE_URL}wells/${id ? id : ""}`, body);
   return request;
 };
 
@@ -34,6 +34,11 @@ export const wellCreate = (body, config = {}) => {
   return request;
 };
 
+export const wellCreateDev = (body, config = {}) => {
+  const request = axios.post(`${BASE_URL}well/dev`, body, config);
+  return request;
+};
+
 export const wellDelete = (id, config = {}) => {
   const request = axios.delete(`${BASE_URL}wells/${id}`, config);
   return request;
@@ -48,4 +53,4 @@ export const updateUserStatus = (id, status, config = {}) =>
   axios.put(`${BASE_URL}user/${id}?is_superuser=${status}`, config);
 export const userDelete = (id, config = {}) =>
   axios.delete(`${BASE_URL}user/${id}`, config);
-export const getStatistics = () => axios.get(`${BASE_URL}statistics/`);
+export const getStatistics = () => axios.get(`${BASE_URL}statistics`);
