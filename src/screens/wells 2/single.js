@@ -19,7 +19,7 @@ const WellSingle = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const [item, setItem] = useState({});
-  const [mem, setMem] = useState(new Date());
+  const [now, setNow] = useState(new Date());
   const [filteredData, setFilteredData] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
   const statistics = useStatistics();
@@ -59,14 +59,14 @@ const WellSingle = () => {
     const filtered = statistics.filter(
       (stat) =>
         stat?.number === item?.number &&
-        stat?.received_at.split("T")[0] === mem.toISOString().split("T")[0]
+        stat?.received_at.split("T")[0] === now.toISOString().split("T")[0]
     );
     setFilteredData(filtered);
 
     if (filtered.length > 0) {
       setSelectedOption(filtered[filtered.length - 1]);
     }
-  }, [mem, statistics, item?.number]);
+  }, [now, statistics, item?.number]);
 
   const handleButtonClick = (data) => {
     setSelectedOption(data);
@@ -82,9 +82,11 @@ const WellSingle = () => {
     {
       icon: IconTemperature,
       label: "Suv harorati",
-      value: parseFloat(selectedOption?.temperature).toFixed(2) || "malumot yoq",
+      value:
+        parseFloat(selectedOption?.temperature).toFixed(2) || "malumot yoq",
       color: "#FAB005",
     },
+
     {
       icon: IconCookie,
       label: "Sho'rlanish darajasi",
@@ -94,7 +96,7 @@ const WellSingle = () => {
       color: "#FA5252",
     },
   ];
-
+  console.log("Hello");
   const stats = options.map((well) => (
     <Paper
       className={classes.stat}
@@ -144,13 +146,13 @@ const WellSingle = () => {
               </Button>
             ))}
           </Group>
-          <p className={classes.date}>{`${mem.getFullYear()}-${
-            mem.getMonth() + 1
-          }-${mem.getDate()}`}</p>
+          <p className={classes.date}>{`${now.getFullYear()}-${
+            now.getMonth() + 1
+          }-${now.getDate()}`}</p>
           {stats}
         </Group>
         <div className={classes.data_picker}>
-          <DataPicker mem={mem} setMem={setMem} />
+          <DataPicker now={now} setNow={setNow} />
         </div>
       </div>
 
