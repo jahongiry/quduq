@@ -82,7 +82,6 @@ const WellSingle = () => {
     {
       icon: IconTemperature,
       label: "Suv harorati",
-
       value:
         parseFloat(selectedOption?.temperature).toFixed(2) || "malumot yoq",
       color: "#FAB005",

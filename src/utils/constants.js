@@ -8,4 +8,5 @@ export const BASE_URL_TG = `https://api.telegram.org/bot${tg.token}/sendMessage?
 export const BASE_URL =
   "https://waterwell-monitor-production-cf83.up.railway.app/api/";
 // export const BASE_URL = "http://127.0.0.1:8000/api/";
+// export const BASE_URL = 'https://waterwell-monitor-production-cf83.up.railway.app/api/';
 export const privatRoutes = ["/super-user-profile"];
