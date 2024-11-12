@@ -102,14 +102,18 @@ const WellSingle = () => {
     setSelectedOption(data);
   };
 
-  const today = new Date(now).toISOString().split("T")[0];
+  console.log("now", now);
+
+  const today = new Date(now).toISOString().split("T")[0]; // 'YYYY-MM-DD' formatiga o'tkazish
+
   const todayData = wellStatistic.filter((item) =>
     item.received_at.startsWith(today)
   );
 
+  // Har bir ma'lumot uchun vaqtni olish
   const todayRicivedDataTime = todayData.map((item) => {
     const date = new Date(item.received_at);
-    return date.toTimeString().slice(0, 5);
+    return date.toTimeString().slice(0, 5); // 'HH:MM' formatida vaqtni olish
   });
 
   const waterLevelsToday = todayData.map((item) => item.water_level);
