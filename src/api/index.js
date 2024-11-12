@@ -6,6 +6,11 @@ export const getWells = (id, method = "get", body) => {
   return request;
 };
 
+export const getWellStatistic = (number, method = "get", body) => {
+  const request = axios[method](`${BASE_URL}statistics/${number}`, body);
+  return request;
+};
+
 export const login = (body, config = {}) => {
   const request = axios.post(`${BASE_URL}sign-in`, body, config);
   return request;
