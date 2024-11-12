@@ -104,8 +104,6 @@ const WellSingle = () => {
     setSelectedOption(data);
   };
 
-  console.log("now", now);
-
   const today = new Date(now).toISOString().split("T")[0]; // 'YYYY-MM-DD' formatiga o'tkazish
 
   const todayData = wellStatistic.filter((item) =>
