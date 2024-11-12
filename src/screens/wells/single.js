@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setStatistics } from "redux/statistics";
-import { Button, Group, Paper, Text, rem } from "@mantine/core";
+import { Button, Group, Loader, Center, Paper, Text, rem } from "@mantine/core";
 import "@mantine/core/styles.css";
 import {
   IconCookie,
@@ -12,7 +12,8 @@ import {
 
 import { DataPicker } from "components/datapicker/DataPicker";
 import { getStatistics, getWells, getWellStatistic } from "api";
-import { useStatistics } from "redux/selectors";
+import { useLoading, useStatistics } from "redux/selectors";
+import { setLoading } from "redux/loading";
 import Chart from "chart.js/auto";
 import classes from "./wells.module.css";
 
@@ -26,6 +27,7 @@ const WellSingle = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const statistics = useStatistics();
   const [isLoading, setIsLoading] = useState(false);
+  const loading = useLoading();
 
   const chartRefs = {
     daily: {
@@ -395,7 +397,11 @@ const WellSingle = () => {
     </Paper>
   ));
 
-  return (
+  return loading || isLoading ? (
+    <Center>
+      <Loader />
+    </Center>
+  ) : (
     <>
       <h1>{item.name}</h1>
       <div className={classes.root} style={{ position: "relative" }}>
