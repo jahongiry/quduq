@@ -102,7 +102,7 @@ const WellSingle = () => {
     setSelectedOption(data);
   };
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date(now).toISOString().split("T")[0];
   const todayData = wellStatistic.filter((item) =>
     item.received_at.startsWith(today)
   );
