@@ -104,249 +104,249 @@ const WellSingle = () => {
     setSelectedOption(data);
   };
 
-  const today = new Date(now).toISOString().split("T")[0]; // 'YYYY-MM-DD' formatiga o'tkazish
+  // const today = new Date(now).toISOString().split("T")[0]; // 'YYYY-MM-DD' formatiga o'tkazish
 
-  const todayData = wellStatistic.filter((item) =>
-    item.received_at.startsWith(today)
-  );
+  // const todayData = wellStatistic.filter((item) =>
+  //   item.received_at.startsWith(today)
+  // );
 
   // Har bir ma'lumot uchun vaqtni olish
-  const todayRicivedDataTime = todayData.map((item) => {
-    const date = new Date(item.received_at);
-    return date.toTimeString().slice(0, 5); // 'HH:MM' formatida vaqtni olish
-  });
+  // const todayRicivedDataTime = todayData.map((item) => {
+  //   const date = new Date(item.received_at);
+  //   return date.toTimeString().slice(0, 5); // 'HH:MM' formatida vaqtni olish
+  // });
 
-  const waterLevelsToday = todayData.map((item) => item.water_level);
-  const waterTemperaturesToday = todayData.map((item) => item.temperature);
-  const waterSalinityToday = todayData.map((item) => item.salinity);
+  // const waterLevelsToday = todayData.map((item) => item.water_level);
+  // const waterTemperaturesToday = todayData.map((item) => item.temperature);
+  // const waterSalinityToday = todayData.map((item) => item.salinity);
 
-  function getWeeklyDataForSelectedDate(data, selectedDate) {
-    const selected = new Date(selectedDate);
-    const startOfWeek = new Date(selected);
-    startOfWeek.setDate(selected.getDate() - selected.getDay());
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 7);
+  // function getWeeklyDataForSelectedDate(data, selectedDate) {
+  //   const selected = new Date(selectedDate);
+  //   const startOfWeek = new Date(selected);
+  //   startOfWeek.setDate(selected.getDate() - selected.getDay());
+  //   const endOfWeek = new Date(startOfWeek);
+  //   endOfWeek.setDate(startOfWeek.getDate() + 7);
 
-    const weeklyData = data.filter((item) => {
-      const itemDate = new Date(item.received_at);
-      return itemDate >= startOfWeek && itemDate < endOfWeek;
-    });
+  //   const weeklyData = data.filter((item) => {
+  //     const itemDate = new Date(item.received_at);
+  //     return itemDate >= startOfWeek && itemDate < endOfWeek;
+  //   });
 
-    const dailyData = weeklyData.reduce((acc, item) => {
-      const date = new Date(item.received_at).toISOString().split("T")[0];
-      if (!acc[date]) acc[date] = [];
-      acc[date].push(item);
-      return acc;
-    }, {});
+  //   const dailyData = weeklyData.reduce((acc, item) => {
+  //     const date = new Date(item.received_at).toISOString().split("T")[0];
+  //     if (!acc[date]) acc[date] = [];
+  //     acc[date].push(item);
+  //     return acc;
+  //   }, {});
 
-    return Object.keys(dailyData).map((date) => {
-      const dayData = dailyData[date];
-      const averageWaterLevel =
-        dayData.reduce((sum, item) => sum + parseFloat(item.water_level), 0) /
-        dayData.length;
-      const averageTemperature =
-        dayData.reduce((sum, item) => sum + parseFloat(item.temperature), 0) /
-        dayData.length;
-      const averageSalinity =
-        dayData.reduce((sum, item) => sum + parseFloat(item.salinity), 0) /
-        dayData.length;
-      return {
-        date,
-        averageWaterLevel,
-        averageTemperature,
-        averageSalinity,
-      };
-    });
-  }
+  //   return Object.keys(dailyData).map((date) => {
+  //     const dayData = dailyData[date];
+  //     const averageWaterLevel =
+  //       dayData.reduce((sum, item) => sum + parseFloat(item.water_level), 0) /
+  //       dayData.length;
+  //     const averageTemperature =
+  //       dayData.reduce((sum, item) => sum + parseFloat(item.temperature), 0) /
+  //       dayData.length;
+  //     const averageSalinity =
+  //       dayData.reduce((sum, item) => sum + parseFloat(item.salinity), 0) /
+  //       dayData.length;
+  //     return {
+  //       date,
+  //       averageWaterLevel,
+  //       averageTemperature,
+  //       averageSalinity,
+  //     };
+  //   });
+  // }
 
-  const selectedDate = new Date(now).toISOString().split("T")[0];
-  const weeklyAverages = getWeeklyDataForSelectedDate(
-    wellStatistic,
-    selectedDate
-  );
+  // const selectedDate = new Date(now).toISOString().split("T")[0];
+  // const weeklyAverages = getWeeklyDataForSelectedDate(
+  //   wellStatistic,
+  //   selectedDate
+  // );
 
-  const weeklyAverageWaterLevel = [];
-  const weeklyAverageTemperature = [];
-  const weeklyAverageSalinity = [];
+  // const weeklyAverageWaterLevel = [];
+  // const weeklyAverageTemperature = [];
+  // const weeklyAverageSalinity = [];
 
-  weeklyAverages.forEach(
-    ({ averageWaterLevel, averageTemperature, averageSalinity }) => {
-      weeklyAverageWaterLevel.push(averageWaterLevel);
-      weeklyAverageTemperature.push(averageTemperature);
-      weeklyAverageSalinity.push(averageSalinity);
-    }
-  );
+  // weeklyAverages.forEach(
+  //   ({ averageWaterLevel, averageTemperature, averageSalinity }) => {
+  //     weeklyAverageWaterLevel.push(averageWaterLevel);
+  //     weeklyAverageTemperature.push(averageTemperature);
+  //     weeklyAverageSalinity.push(averageSalinity);
+  //   }
+  // );
 
-  const selectedDateByMonth = new Date(now);
-  const selectedMonth = selectedDateByMonth.getMonth();
+  // const selectedDateByMonth = new Date(now);
+  // const selectedMonth = selectedDateByMonth.getMonth();
 
-  const filteredDataByMonth = wellStatistic.filter((item) => {
-    const itemDate = new Date(item.received_at);
-    return itemDate.getMonth() === selectedMonth;
-  });
+  // const filteredDataByMonth = wellStatistic.filter((item) => {
+  //   const itemDate = new Date(item.received_at);
+  //   return itemDate.getMonth() === selectedMonth;
+  // });
 
-  const averagedDataByDay = Object.values(
-    filteredDataByMonth.reduce((acc, item) => {
-      const itemDate = new Date(item.received_at);
-      const date = itemDate.toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-      });
+  // const averagedDataByDay = Object.values(
+  //   filteredDataByMonth.reduce((acc, item) => {
+  //     const itemDate = new Date(item.received_at);
+  //     const date = itemDate.toLocaleDateString("en-GB", {
+  //       day: "2-digit",
+  //       month: "2-digit",
+  //     });
 
-      if (!acc[date]) {
-        acc[date] = {
-          date,
-          count: 0,
-          totalWaterLevel: 0,
-          totalTemperature: 0,
-          totalSalinity: 0,
-        };
-      }
+  //     if (!acc[date]) {
+  //       acc[date] = {
+  //         date,
+  //         count: 0,
+  //         totalWaterLevel: 0,
+  //         totalTemperature: 0,
+  //         totalSalinity: 0,
+  //       };
+  //     }
 
-      acc[date].count += 1;
-      acc[date].totalWaterLevel += parseFloat(item.water_level);
-      acc[date].totalTemperature += parseFloat(item.temperature);
-      acc[date].totalSalinity += parseFloat(item.salinity);
+  //     acc[date].count += 1;
+  //     acc[date].totalWaterLevel += parseFloat(item.water_level);
+  //     acc[date].totalTemperature += parseFloat(item.temperature);
+  //     acc[date].totalSalinity += parseFloat(item.salinity);
 
-      return acc;
-    }, {})
-  ).map((day) => ({
-    date: day.date,
-    avgWaterLevel: (day.totalWaterLevel / day.count).toFixed(2),
-    avgTemperature: (day.totalTemperature / day.count).toFixed(2),
-    avgSalinity: (day.totalSalinity / day.count / 1000).toFixed(2),
-  }));
+  //     return acc;
+  //   }, {})
+  // ).map((day) => ({
+  //   date: day.date,
+  //   avgWaterLevel: (day.totalWaterLevel / day.count).toFixed(2),
+  //   avgTemperature: (day.totalTemperature / day.count).toFixed(2),
+  //   avgSalinity: (day.totalSalinity / day.count / 1000).toFixed(2),
+  // }));
 
-  const {
-    monthDay,
-    monthAvgWaterLevel,
-    monthAvgTemperature,
-    monthAvgSalinity,
-  } = averagedDataByDay.reduce(
-    (acc, item) => {
-      acc.monthDay.push(item.date);
-      acc.monthAvgWaterLevel.push(item.avgWaterLevel);
-      acc.monthAvgTemperature.push(item.avgTemperature);
-      acc.monthAvgSalinity.push(item.avgSalinity);
-      return acc;
-    },
-    {
-      monthDay: [],
-      monthAvgWaterLevel: [],
-      monthAvgTemperature: [],
-      monthAvgSalinity: [],
-    }
-  );
+  // const {
+  //   monthDay,
+  //   monthAvgWaterLevel,
+  //   monthAvgTemperature,
+  //   monthAvgSalinity,
+  // } = averagedDataByDay.reduce(
+  //   (acc, item) => {
+  //     acc.monthDay.push(item.date);
+  //     acc.monthAvgWaterLevel.push(item.avgWaterLevel);
+  //     acc.monthAvgTemperature.push(item.avgTemperature);
+  //     acc.monthAvgSalinity.push(item.avgSalinity);
+  //     return acc;
+  //   },
+  //   {
+  //     monthDay: [],
+  //     monthAvgWaterLevel: [],
+  //     monthAvgTemperature: [],
+  //     monthAvgSalinity: [],
+  //   }
+  // );
 
-  const createChart = (ref, label, data, timeframe) => {
-    if (ref.current) {
-      ref.current.destroy();
-    }
+  // const createChart = (ref, label, data, timeframe) => {
+  //   if (ref.current) {
+  //     ref.current.destroy();
+  //   }
 
-    const ctx = document
-      .getElementById(`${timeframe}${label}Chart`)
-      .getContext("2d");
+  //   const ctx = document
+  //     .getElementById(`${timeframe}${label}Chart`)
+  //     .getContext("2d");
 
-    let labels;
-    let borderColor;
+  //   let labels;
+  //   let borderColor;
 
-    if (timeframe === "Kunlik") {
-      labels = todayRicivedDataTime;
-    } else if (timeframe === "Haftalik") {
-      labels = ["Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"];
-    } else if (timeframe === "Oylik") {
-      labels = monthDay;
-    }
+  //   if (timeframe === "Kunlik") {
+  //     labels = todayRicivedDataTime;
+  //   } else if (timeframe === "Haftalik") {
+  //     labels = ["Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"];
+  //   } else if (timeframe === "Oylik") {
+  //     labels = monthDay;
+  //   }
 
-    if (label === "SuvYerSathidan") {
-      borderColor = "#00FFFF";
-    } else if (label === "SuvHarorati") {
-      borderColor = "#FAB005";
-    } else if (label === "ShurlanishDarajasi") {
-      borderColor = "#FA5252";
-    }
+  //   if (label === "SuvYerSathidan") {
+  //     borderColor = "#00FFFF";
+  //   } else if (label === "SuvHarorati") {
+  //     borderColor = "#FAB005";
+  //   } else if (label === "ShurlanishDarajasi") {
+  //     borderColor = "#FA5252";
+  //   }
 
-    ref.current = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels,
-        datasets: [
-          {
-            label: label + timeframe,
-            data: data,
-            fill: false,
-            borderColor: borderColor,
-            tension: 0.1,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-      },
-    });
-  };
+  //   ref.current = new Chart(ctx, {
+  //     type: "line",
+  //     data: {
+  //       labels,
+  //       datasets: [
+  //         {
+  //           label: label + timeframe,
+  //           data: data,
+  //           fill: false,
+  //           borderColor: borderColor,
+  //           tension: 0.1,
+  //         },
+  //       ],
+  //     },
+  //     options: {
+  //       responsive: true,
+  //     },
+  //   });
+  // };
 
-  useEffect(() => {
-    // Suv yer sathidan chartsa
-    createChart(
-      chartRefs.daily.SuvYerSathidan,
-      "SuvYerSathidan",
-      waterLevelsToday,
-      "Kunlik"
-    );
-    createChart(
-      chartRefs.weekly.SuvYerSathidan,
-      "SuvYerSathidan",
-      weeklyAverageWaterLevel,
-      "Haftalik"
-    );
-    createChart(
-      chartRefs.monthly.SuvYerSathidan,
-      "SuvYerSathidan",
-      monthAvgWaterLevel,
-      "Oylik"
-    );
+  // useEffect(() => {
+  //   // Suv yer sathidan chartsa
+  //   createChart(
+  //     chartRefs.daily.SuvYerSathidan,
+  //     "SuvYerSathidan",
+  //     waterLevelsToday,
+  //     "Kunlik"
+  //   );
+  //   createChart(
+  //     chartRefs.weekly.SuvYerSathidan,
+  //     "SuvYerSathidan",
+  //     weeklyAverageWaterLevel,
+  //     "Haftalik"
+  //   );
+  //   createChart(
+  //     chartRefs.monthly.SuvYerSathidan,
+  //     "SuvYerSathidan",
+  //     monthAvgWaterLevel,
+  //     "Oylik"
+  //   );
 
-    // Suv harorati charts
-    createChart(
-      chartRefs.daily.SuvHarorati,
-      "SuvHarorati",
-      waterTemperaturesToday,
-      "Kunlik"
-    );
-    createChart(
-      chartRefs.weekly.SuvHarorati,
-      "SuvHarorati",
-      weeklyAverageTemperature,
-      "Haftalik"
-    );
-    createChart(
-      chartRefs.monthly.SuvHarorati,
-      "SuvHarorati",
-      monthAvgTemperature,
-      "Oylik"
-    );
+  //   // Suv harorati charts
+  //   createChart(
+  //     chartRefs.daily.SuvHarorati,
+  //     "SuvHarorati",
+  //     waterTemperaturesToday,
+  //     "Kunlik"
+  //   );
+  //   createChart(
+  //     chartRefs.weekly.SuvHarorati,
+  //     "SuvHarorati",
+  //     weeklyAverageTemperature,
+  //     "Haftalik"
+  //   );
+  //   createChart(
+  //     chartRefs.monthly.SuvHarorati,
+  //     "SuvHarorati",
+  //     monthAvgTemperature,
+  //     "Oylik"
+  //   );
 
-    // Sho'rlanish darajasi charts
-    createChart(
-      chartRefs.daily.ShurlanishDarajasi,
-      "ShurlanishDarajasi",
-      waterSalinityToday,
-      "Kunlik"
-    );
-    createChart(
-      chartRefs.weekly.ShurlanishDarajasi,
-      "ShurlanishDarajasi",
-      weeklyAverageSalinity,
-      "Haftalik"
-    );
-    createChart(
-      chartRefs.monthly.ShurlanishDarajasi,
-      "ShurlanishDarajasi",
-      monthAvgSalinity,
-      "Oylik"
-    );
-  }, [selectedOption]);
+  //   // Sho'rlanish darajasi charts
+  //   createChart(
+  //     chartRefs.daily.ShurlanishDarajasi,
+  //     "ShurlanishDarajasi",
+  //     waterSalinityToday,
+  //     "Kunlik"
+  //   );
+  //   createChart(
+  //     chartRefs.weekly.ShurlanishDarajasi,
+  //     "ShurlanishDarajasi",
+  //     weeklyAverageSalinity,
+  //     "Haftalik"
+  //   );
+  //   createChart(
+  //     chartRefs.monthly.ShurlanishDarajasi,
+  //     "ShurlanishDarajasi",
+  //     monthAvgSalinity,
+  //     "Oylik"
+  //   );
+  // }, [selectedOption]);
 
   const options = [
     {
@@ -434,7 +434,7 @@ const WellSingle = () => {
           <DataPicker now={now} setNow={setNow} />
         </div>
       </div>
-      <div className={classes.diagrams}>
+      {/* <div className={classes.diagrams}>
         <div className={classes.diagramItem}>
           <canvas id="KunlikSuvYerSathidanChart"></canvas>
           <canvas id="HaftalikSuvYerSathidanChart"></canvas>
@@ -450,7 +450,7 @@ const WellSingle = () => {
           <canvas id="HaftalikShurlanishDarajasiChart"></canvas>
           <canvas id="OylikShurlanishDarajasiChart"></canvas>
         </div>
-      </div>
+      </div> */}
       <iframe
         className={classes.iframe}
         title="Well Location"
