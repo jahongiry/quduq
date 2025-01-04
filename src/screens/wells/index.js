@@ -88,22 +88,8 @@ export default function Wells() {
   const [editModal, setEditModal] = useState({});
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [staticsData, setStaticsData] = useState([]);
   const [status, setStatus] = useState(false);
 
-  const getStat = useCallback(() => {
-    getStatistics()
-      .then(({ data }) => {
-        setIsLoading(false);
-        setStaticsData(data);
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        console.log("====================================");
-        console.log(err);
-        console.log("====================================");
-      });
-  }, [dispatch]);
   const getData = useCallback(() => {
     dispatch(setLoading(true));
     getWells()
@@ -120,9 +106,7 @@ export default function Wells() {
   useEffect(() => {
     setSortedData(data);
   }, [data]);
-  useEffect(() => {
-    getStat();
-  }, [getStat, pathname, status]);
+
   useEffect(() => {
     getData();
   }, [getData, pathname, status]);
@@ -133,27 +117,7 @@ export default function Wells() {
     setSortBy(field);
     setSortedData(sortData(data, { sortBy: field, reversed, search }));
   };
-  const arr = [];
-  for (let i = 0; i < sortedData.length; i++) {
-    arr.push({ number: sortedData[i].number, name: sortedData[i].name });
-  }
-  const singleData = [];
-  for (let i = 0; i < arr.length; i++) {
-    singleData.push({
-      id: i,
-      number: arr[i].number,
-      data: staticsData.filter((el) => el.number == arr[i].number + ";"),
-    });
-  }
-  const myLatestSingleData = [];
-  for (let i = 0; i < singleData.length; i++) {
-    myLatestSingleData.push([
-      {
-        number: singleData[i].number,
-        data: singleData[i].data[singleData[i].data.length - 1],
-      },
-    ]);
-  }
+
   const handleSearchChange = (event) => {
     const { value } = event.currentTarget;
     setSearch(value);
