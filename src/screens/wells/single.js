@@ -77,12 +77,12 @@ const WellSingle = () => {
   }, [item.number, getWellStat]);
 
   useEffect(() => {
+    console.log(now.getDate());
     const filtered = wellStatistic.filter(
       (stat) =>
         stat?.number === item?.number &&
         new Date(stat.received_at).getDate() === now.getDate()
     );
-    console.log(filtered);
     setFilteredData(filtered);
 
     if (filtered.length > 0) {
