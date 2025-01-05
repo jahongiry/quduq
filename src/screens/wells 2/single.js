@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setStatistics } from "redux/statistics";
-import { Button, Group, Paper, Text, rem } from "@mantine/core";
+import { Button, Group, Loader, Center, Paper, Text, rem } from "@mantine/core";
 import "@mantine/core/styles.css";
 import {
   IconCookie,
@@ -10,93 +9,109 @@ import {
   IconWaterpolo,
 } from "@tabler/icons-react";
 
-import classes from "./wells.module.css";
 import { DataPicker } from "components/datapicker/DataPicker";
-import { getStatistics, getWells } from "api";
-import { useStatistics } from "redux/selectors";
+import { getWells, getWellStatistic } from "api";
+import { useLoading } from "redux/selectors";
+import classes from "./wells.module.css";
 
 const WellSingle = () => {
+  const { wellId } = useParams();
   const dispatch = useDispatch();
-  const { id } = useParams();
-  const [item, setItem] = useState({});
-  const [now, setNow] = useState(new Date());
-  const [filteredData, setFilteredData] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const statistics = useStatistics();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [wellDetails, setWellDetails] = useState({});
+  const [wellStatistics, setWellStatistic] = useState([]);
+  const [filteredStatistics, setFilteredStatistics] = useState([]);
+  const [currentDate, setNow] = useState(new Date());
+  const [selectedStatistic, setSelectedStatistic] = useState(null);
+  const [isLoading, setLoadingStatus] = useState(false);
+  const loading = useLoading();
 
-  const getData = useCallback(() => {
-    setIsLoading(true);
-    getWells(id)
-      .then(({ data }) => {
-        setIsLoading(false);
-        setItem(data);
-      })
-      .catch(({ message }) => {
-        setIsLoading(false);
-      });
-  }, [id]);
-
-  const getStat = useCallback(() => {
-    getStatistics()
-      .then(({ data }) => {
-        setIsLoading(false);
-        dispatch(setStatistics(data));
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        console.log(err);
-      });
-  }, [dispatch]);
-
-  useEffect(() => {
-    getData();
-    getStat();
-  }, [getData, getStat]);
-
-  useEffect(() => {
-    const filtered = statistics.filter(
-      (stat) =>
-        stat?.number === item?.number &&
-        stat?.received_at.split("T")[0] === now.toISOString().split("T")[0]
-    );
-    setFilteredData(filtered);
-
-    if (filtered.length > 0) {
-      setSelectedOption(filtered[filtered.length - 1]);
+  const fetchWellData = useCallback(async () => {
+    try {
+      setLoadingStatus(true);
+      const { data } = await getWells(wellId);
+      setWellDetails(data);
+    } catch (error) {
+      console.error("Error fetching well data:", error);
+    } finally {
+      setLoadingStatus(false);
     }
-  }, [now, statistics, item?.number]);
+  }, [wellId]);
+
+  useEffect(() => {
+    fetchWellData();
+  }, [fetchWellData]);
+
+  const fetchStatisticsForWell = useCallback(async () => {
+    try {
+      setLoadingStatus(true);
+      const { data } = await getWellStatistic(wellDetails?.number);
+      setWellStatistic(data);
+      // dispatch(setLoading(data));
+      setLoadingStatus(false);
+    } catch (error) {
+      console.error("Error fetching well statistics:", error);
+    } finally {
+      setLoadingStatus(false);
+    }
+  }, [dispatch, wellDetails]);
+
+  useEffect(() => {
+    if (wellDetails?.number) {
+      fetchStatisticsForWell();
+    }
+  }, [wellDetails]);
+
+  useEffect(() => {
+    if (wellStatistics && wellStatistics.length > 0) {
+      const filtered = wellStatistics.filter((stat) => {
+        const statDate = new Date(stat.received_at);
+        const statDateTimezoneOffset = statDate.getTimezoneOffset();
+        const localStatDate = new Date(
+          statDate.getTime() - statDateTimezoneOffset * 60 * 1000
+        );
+        const currentDateWithoutTime = currentDate.toLocaleDateString();
+        const statDateWithoutTime = localStatDate.toLocaleDateString();
+
+        return currentDateWithoutTime === statDateWithoutTime;
+      });
+
+      setFilteredStatistics(filtered);
+
+      if (filtered.length > 0) {
+        setSelectedStatistic(filtered[filtered.length - 1]);
+      }
+    }
+  }, [wellStatistics, currentDate]);
 
   const handleButtonClick = (data) => {
-    setSelectedOption(data);
+    setSelectedStatistic(data);
   };
 
   const options = [
     {
       icon: IconWaterpolo,
       label: "Suv yer sathidan",
-      value: selectedOption?.water_level || "malumot yoq",
+      value: selectedStatistic?.water_level || "malumot yoq",
       color: "aqua",
     },
     {
       icon: IconTemperature,
       label: "Suv harorati",
       value:
-        parseFloat(selectedOption?.temperature).toFixed(2) || "malumot yoq",
+        parseFloat(selectedStatistic?.temperature).toFixed(2) || "malumot yoq",
       color: "#FAB005",
     },
-
     {
       icon: IconCookie,
       label: "Sho'rlanish darajasi",
       value:
-        (parseFloat(selectedOption?.salinity) / 1000).toFixed(2) ||
+        (parseFloat(selectedStatistic?.salinity) / 1000).toFixed(2) ||
         "malumot yoq",
       color: "#FA5252",
     },
   ];
-  console.log("Hello");
+
   const stats = options.map((well) => (
     <Paper
       className={classes.stat}
@@ -120,9 +135,13 @@ const WellSingle = () => {
     </Paper>
   ));
 
-  return (
+  return loading || isLoading ? (
+    <Center>
+      <Loader />
+    </Center>
+  ) : (
     <>
-      <h1>{item.name}</h1>
+      <h1>{wellDetails.name}</h1>
       <div className={classes.root} style={{ position: "relative" }}>
         <Group style={{ flex: 1 }}>
           <Group
@@ -132,35 +151,39 @@ const WellSingle = () => {
             justify={"center"}
             className={classes.hours}
           >
-            {filteredData.map((data) => (
+            {filteredStatistics.map((data) => (
               <Button
                 className="active_btn"
                 onClick={() => handleButtonClick(data)}
                 key={data.received_at}
                 style={{
                   backgroundColor:
-                    selectedOption === data ? "darkgrey" : "lightgrey",
+                    selectedStatistic === data ? "darkgrey" : "lightgrey",
                 }}
               >
-                {data.received_at.split("T")[1].slice(0, 5)}
+                {new Date(
+                  new Date(data.received_at).getTime() + 5 * 60 * 60 * 1000
+                )
+                  .toISOString()
+                  .split("T")[1]
+                  .slice(0, 5)}
               </Button>
             ))}
           </Group>
-          <p className={classes.date}>{`${now.getFullYear()}-${
-            now.getMonth() + 1
-          }-${now.getDate()}`}</p>
+          <p className={classes.date}>{`${currentDate.getFullYear()}-${
+            currentDate.getMonth() + 1
+          }-${currentDate.getDate()}`}</p>
           {stats}
         </Group>
         <div className={classes.data_picker}>
-          <DataPicker now={now} setNow={setNow} />
+          <DataPicker now={currentDate} setNow={setNow} />
         </div>
       </div>
-
       <iframe
         className={classes.iframe}
         title="Well Location"
         loading="lazy"
-        src={`https://maps.google.com/maps?q=${item.latitude},${item.longitude}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+        src={`https://maps.google.com/maps?q=${wellDetails.latitude},${wellDetails.longitude}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
       />
     </>
   );
