@@ -67,15 +67,10 @@ export default function Header() {
     }
   }, [dispatch, navigate, pathname, refLink, user?.user_id]);
 
-  useEffect(() => {
-    getData();
-  }, [getData]);
-
   const links = useMemo(() => {
     const allLinks = [
       { link: "/", label: "Asosiy" },
       { link: "/wells", label: "Quduqlar" },
-      // { link: '/rivers', label: 'Daryolar' },
       user?.user_id
         ? user?.is_superuser
           ? { link: "/super-user-profile", label: "Profile" }
